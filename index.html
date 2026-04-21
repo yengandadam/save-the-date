@@ -51,12 +51,17 @@
       align-items: center;
       gap: 0;
       width: 100%;
-      max-width: 460px;
+      max-width: 720px;
     }
 
     .hero .letter-card {
-      width: 100%;
-      padding: 6% 11% 5%;
+      width: min(100%, calc(90vh * 15 / 21));
+      aspect-ratio: 15 / 21;
+      padding: 64px 80px 56px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
 
     .ornament { color: #4a6a38; font-size: 14px; letter-spacing: 5px; margin-bottom: 0.5rem; }
@@ -64,11 +69,10 @@
 
     .names {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(20px, 4vw, 30px);
+      font-size: clamp(24px, 3.5vw, 38px);
       font-weight: 300;
       line-height: 1.2;
       color: #2c3e22;
-      white-space: nowrap;
       text-transform: uppercase;
       letter-spacing: 3px;
     }
@@ -114,9 +118,13 @@
     }
 
     .rsvp-section .letter-card {
-      max-width: 460px;
-      width: 100%;
-      padding: 12% 11% 10%;
+      width: min(100%, calc(90vh * 15 / 21));
+      aspect-ratio: 15 / 21;
+      padding: 72px 80px 64px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       opacity: 0;
       transform: translateY(40px);
       transition: opacity 0.85s ease, transform 0.85s ease;
@@ -163,8 +171,8 @@
     .submit-btn:hover:not(:disabled) { background: rgba(100,140,70,0.1); }
     .submit-btn:disabled { opacity: 0.45; cursor: default; }
 
+    #formState { width: 100%; }
     .status-msg { margin-top: 1rem; font-size: 11px; letter-spacing: 1px; min-height: 16px; color: #5a7a40; }
-    .status-msg.error { color: #a04030; }
 
     .success-state { display: none; flex-direction: column; align-items: center; gap: 0.9rem; padding: 0.5rem 0; }
     .success-icon { width: 44px; height: 44px; border: 0.5px solid #8aaa62; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #5a7a45; font-size: 20px; }
