@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Save the Date — Yeng & Adam · May 1st, 2027</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Lato:wght@300;400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #1a2e1a;
+      background-image:
+        radial-gradient(ellipse at 10% 20%, rgba(34,68,28,0.85) 0%, transparent 55%),
+        radial-gradient(ellipse at 90% 80%, rgba(20,50,18,0.9) 0%, transparent 50%);
+      padding: 2rem 1rem;
+      font-family: 'Lato', sans-serif;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* SVG forest background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='700' viewBox='0 0 1200 700'%3E%3Crect width='1200' height='700' fill='%231a2e1a'/%3E%3Cellipse cx='600' cy='780' rx='700' ry='220' fill='%23111f11' opacity='0.7'/%3E%3Cg fill='%232d4a25' opacity='0.75'%3E%3Cellipse cx='60' cy='700' rx='42' ry='240'/%3E%3Cellipse cx='100' cy='700' rx='30' ry='200'/%3E%3Cellipse cx='1140' cy='700' rx='42' ry='240'/%3E%3Cellipse cx='1100' cy='700' rx='30' ry='200'/%3E%3Cellipse cx='220' cy='700' rx='24' ry='160'/%3E%3Cellipse cx='980' cy='700' rx='24' ry='160'/%3E%3Cellipse cx='350' cy='700' rx='18' ry='120'/%3E%3Cellipse cx='850' cy='700' rx='18' ry='120'/%3E%3C/g%3E%3Cg fill='%23243d1c' opacity='0.55'%3E%3Cellipse cx='40' cy='660' rx='70' ry='100'/%3E%3Cellipse cx='1160' cy='660' rx='70' ry='100'/%3E%3Cellipse cx='180' cy='670' rx='55' ry='80'/%3E%3Cellipse cx='1020' cy='670' rx='55' ry='80'/%3E%3Cellipse cx='300' cy='680' rx='40' ry='60'/%3E%3Cellipse cx='900' cy='680' rx='40' ry='60'/%3E%3C/g%3E%3Cg stroke='%234a7a30' stroke-width='0.6' opacity='0.2' fill='none'%3E%3Cpath d='M58 700 Q62 600 60 480 Q58 400 62 320'/%3E%3Cpath d='M100 700 Q96 590 98 460 Q100 380 96 300'/%3E%3Cpath d='M1140 700 Q1144 600 1140 480 Q1137 400 1142 320'/%3E%3Cpath d='M1102 700 Q1106 590 1104 460 Q1102 380 1106 300'/%3E%3C/g%3E%3Cg fill='%235a8a35' opacity='0.14'%3E%3Cellipse cx='65' cy='380' rx='50' ry='20'/%3E%3Cellipse cx='80' cy='430' rx='65' ry='18'/%3E%3Cellipse cx='1130' cy='380' rx='50' ry='20'/%3E%3Cellipse cx='1115' cy='430' rx='65' ry='18'/%3E%3C/g%3E%3Cg fill='%23a8c47a' opacity='0.04'%3E%3Ccircle cx='150' cy='200' r='120'/%3E%3Ccircle cx='1050' cy='160' r='100'/%3E%3Ccircle cx='600' cy='100' r='80'/%3E%3C/g%3E%3C/svg%3E");
+      background-size: cover;
+      background-position: center bottom;
+      z-index: 0;
+    }
+
+    .page-wrap {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 560px;
+      text-align: center;
+    }
+
+    .card {
+      border: 0.5px solid rgba(168,200,122,0.6);
+      border-radius: 2px;
+      padding: 3rem 2.5rem;
+      position: relative;
+      background: rgba(12, 24, 10, 0.6);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 8px; left: 8px; right: 8px; bottom: 8px;
+      border: 0.5px solid rgba(168,200,122,0.22);
+      border-radius: 2px;
+      pointer-events: none;
+    }
+
+    .ornament {
+      color: #a8c87a;
+      font-size: 16px;
+      letter-spacing: 6px;
+      margin-bottom: 0.6rem;
+    }
+
+    .tag {
+      font-size: 11px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: #a8c87a;
+      margin-bottom: 1.4rem;
+    }
+
+    .names {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(40px, 9vw, 62px);
+      font-weight: 300;
+      line-height: 1.15;
+      color: #f0ede6;
+    }
+
+    .ampersand {
+      font-style: italic;
+      color: #a8c87a;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 1.3rem auto;
+      max-width: 300px;
+    }
+
+    .divider-line {
+      flex: 1;
+      height: 0.5px;
+      background: #7aab55;
+      opacity: 0.65;
+    }
+
+    .divider-diamond {
+      width: 6px;
+      height: 6px;
+      background: #a8c87a;
+      transform: rotate(45deg);
+      flex-shrink: 0;
+    }
+
+    .date-block {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(22px, 5vw, 34px);
+      font-weight: 300;
+      color: #f0ede6;
+      letter-spacing: 2px;
+      margin: 0.5rem 0 0.4rem;
+    }
+
+    .year {
+      font-size: 13px;
+      letter-spacing: 5px;
+      color: #b8c8a8;
+    }
+
+    .venue-section {
+      margin-top: 1.8rem;
+    }
+
+    .venue-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 22px;
+      font-weight: 300;
+      color: #f0ede6;
+      margin-bottom: 6px;
+    }
+
+    .venue-addr {
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      color: #b8c8a8;
+      line-height: 1.9;
+    }
+
+    .footer-note {
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #7a9a60;
+      margin-top: 1.8rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="page-wrap">
+    <div class="card">
+      <div class="ornament">✦ ✦ ✦</div>
+      <div class="tag">Save the Date</div>
+      <div class="names">
+        Yeng Kwok<br>
+        <span class="ampersand">&amp;</span><br>
+        Adam Wang
+      </div>
+      <div class="divider">
+        <div class="divider-line"></div>
+        <div class="divider-diamond"></div>
+        <div class="divider-line"></div>
+      </div>
+      <div class="date-block">May 1st, 2027</div>
+      <div class="venue-section">
+        <div class="divider" style="margin-top: 1.4rem;">
+          <div class="divider-line"></div>
+          <div class="divider-diamond"></div>
+          <div class="divider-line"></div>
+        </div>
+        <div class="venue-name">InterContinental Chicago</div>
+        <div class="venue-addr">505 N Michigan Ave · Chicago, Illinois 60611</div>
+      </div>
+      <div class="footer-note">Formal invitation to follow</div>
+    </div>
+  </div>
+</body>
+</html>
