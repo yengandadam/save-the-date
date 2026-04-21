@@ -8,94 +8,190 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
-    body { min-height: 100vh; background-color: #1a2e1a; font-family: 'Lato', sans-serif; color: #f0ede6; }
-    .forest-bg {
-      position: fixed; inset: 0;
-      background-image:
-        radial-gradient(ellipse at 10% 20%, rgba(34,68,28,0.85) 0%, transparent 55%),
-        radial-gradient(ellipse at 90% 80%, rgba(20,50,18,0.9) 0%, transparent 50%),
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='700' viewBox='0 0 1200 700'%3E%3Crect width='1200' height='700' fill='%231a2e1a'/%3E%3Cellipse cx='600' cy='780' rx='700' ry='220' fill='%23111f11' opacity='0.7'/%3E%3Cg fill='%232d4a25' opacity='0.75'%3E%3Cellipse cx='60' cy='700' rx='42' ry='240'/%3E%3Cellipse cx='100' cy='700' rx='30' ry='200'/%3E%3Cellipse cx='1140' cy='700' rx='42' ry='240'/%3E%3Cellipse cx='1100' cy='700' rx='30' ry='200'/%3E%3Cellipse cx='220' cy='700' rx='24' ry='160'/%3E%3Cellipse cx='980' cy='700' rx='24' ry='160'/%3E%3C/g%3E%3Cg fill='%23243d1c' opacity='0.55'%3E%3Cellipse cx='40' cy='660' rx='70' ry='100'/%3E%3Cellipse cx='1160' cy='660' rx='70' ry='100'/%3E%3Cellipse cx='180' cy='670' rx='55' ry='80'/%3E%3Cellipse cx='1020' cy='670' rx='55' ry='80'/%3E%3C/g%3E%3Cg stroke='%234a7a30' stroke-width='0.6' opacity='0.2' fill='none'%3E%3Cpath d='M58 700 Q62 600 60 480 Q58 400 62 320'/%3E%3Cpath d='M1140 700 Q1144 600 1140 480 Q1137 400 1142 320'/%3E%3C/g%3E%3C/svg%3E");
-      background-size: cover; background-position: center bottom; z-index: 0;
+
+    body {
+      min-height: 100vh;
+      font-family: 'Lato', sans-serif;
+      background: url('assets/background.jpg') center center / cover fixed;
     }
+
+    /* dark overlay so text stays readable */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: rgba(30, 48, 28, 0.38);
+      pointer-events: none;
+      z-index: 0;
+    }
+
     .page-content { position: relative; z-index: 1; }
-    .hero { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem 1rem; }
-    .card {
-      border: 0.5px solid rgba(168,200,122,0.6); border-radius: 2px; padding: 3rem 2.5rem;
-      position: relative; background: rgba(12,24,10,0.6); backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px); max-width: 560px; width: 100%; text-align: center;
+
+    /* ── Shared letter card ── */
+    .letter-card {
+      background: url('assets/letter.png') center center / cover no-repeat;
+      border: none;
+      border-radius: 4px;
+      position: relative;
+      text-align: center;
     }
-    .card::before {
-      content: ''; position: absolute; top: 8px; left: 8px; right: 8px; bottom: 8px;
-      border: 0.5px solid rgba(168,200,122,0.22); border-radius: 2px; pointer-events: none;
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 1.5rem;
     }
-    .ornament { color: #a8c87a; font-size: 16px; letter-spacing: 6px; margin-bottom: 0.6rem; }
-    .tag { font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: #a8c87a; margin-bottom: 1.4rem; }
-    .names { font-family: 'Cormorant Garamond', serif; font-size: clamp(40px, 9vw, 62px); font-weight: 300; line-height: 1.15; color: #f0ede6; }
-    .ampersand { font-style: italic; color: #a8c87a; }
-    .divider { display: flex; align-items: center; gap: 12px; margin: 1.3rem auto; max-width: 300px; }
-    .divider-line { flex: 1; height: 0.5px; background: #7aab55; opacity: 0.65; }
-    .divider-diamond { width: 6px; height: 6px; background: #a8c87a; transform: rotate(45deg); flex-shrink: 0; }
-    .date-block { font-family: 'Cormorant Garamond', serif; font-size: clamp(22px, 5vw, 34px); font-weight: 300; color: #f0ede6; letter-spacing: 2px; margin: 0.5rem 0 0.4rem; }
-    .venue-section { margin-top: 1.8rem; }
-    .venue-name { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 22px; font-weight: 300; color: #f0ede6; margin-bottom: 6px; }
-    .venue-addr { font-size: 11px; letter-spacing: 1.5px; color: #b8c8a8; line-height: 1.9; }
-    .footer-note { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: #7a9a60; margin-top: 1.8rem; }
-    .scroll-hint { margin-top: 2rem; display: flex; flex-direction: column; align-items: center; gap: 8px; color: #7a9a60; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; }
-    .scroll-arrow { width: 14px; height: 14px; border-right: 1px solid #7a9a60; border-bottom: 1px solid #7a9a60; transform: rotate(45deg); animation: bounce 1.6s ease infinite; }
-    .rsvp-section { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 4rem 1rem; }
-    .rsvp-card {
-      border: 0.5px solid rgba(168,200,122,0.6); border-radius: 2px; padding: 3rem 2.5rem;
-      background: rgba(12,24,10,0.7); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
-      max-width: 520px; width: 100%; text-align: center; position: relative;
-      opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease, transform 0.8s ease;
+
+    .hero-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      width: 100%;
+      max-width: 480px;
     }
-    .rsvp-card.visible { opacity: 1; transform: translateY(0); }
-    .rsvp-card::before {
-      content: ''; position: absolute; top: 8px; left: 8px; right: 8px; bottom: 8px;
-      border: 0.5px solid rgba(168,200,122,0.22); border-radius: 2px; pointer-events: none;
+
+    .hero .letter-card {
+      width: 100%;
+      padding: 14% 12% 10%;
     }
-    .rsvp-title { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 300; color: #f0ede6; margin-bottom: 0.4rem; }
-    .rsvp-subtitle { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: #a8c87a; margin-bottom: 2rem; }
-    .field-group { margin-bottom: 1.4rem; text-align: left; }
-    .field-group label { display: block; font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: #a8c87a; margin-bottom: 8px; }
+
+    .ornament { color: #5a7a45; font-size: 14px; letter-spacing: 5px; margin-bottom: 0.5rem; }
+    .tag { font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: #6a8a50; margin-bottom: 1.2rem; }
+
+    .names {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(36px, 8vw, 54px);
+      font-weight: 300;
+      line-height: 1.2;
+      color: #2c3e22;
+    }
+    .ampersand { font-style: italic; color: #7a9a58; }
+
+    .divider { display: flex; align-items: center; gap: 10px; margin: 1.1rem auto; max-width: 260px; }
+    .divider-line { flex: 1; height: 0.5px; background: #8aaa62; opacity: 0.7; }
+    .divider-diamond { width: 5px; height: 5px; background: #8aaa62; transform: rotate(45deg); flex-shrink: 0; }
+
+    .date-block {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(18px, 4.5vw, 28px);
+      font-weight: 300;
+      color: #2c3e22;
+      letter-spacing: 2px;
+      margin: 0.4rem 0 0.3rem;
+    }
+
+    .venue-section { margin-top: 1.4rem; }
+    .venue-name { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 19px; font-weight: 300; color: #2c3e22; margin-bottom: 5px; }
+    .venue-addr { font-size: 10px; letter-spacing: 1.5px; color: #4a6038; line-height: 2; }
+    .footer-note { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #6a8050; margin-top: 1.5rem; }
+
+    .scroll-hint {
+      margin-top: 1.8rem;
+      display: flex; flex-direction: column; align-items: center; gap: 7px;
+      color: #f0ede6; font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+    }
+    .scroll-arrow {
+      width: 12px; height: 12px;
+      border-right: 1px solid #f0ede6;
+      border-bottom: 1px solid #f0ede6;
+      transform: rotate(45deg);
+      animation: bounce 1.6s ease infinite;
+    }
+
+    /* ── RSVP section ── */
+    .rsvp-section {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 4rem 1.5rem;
+    }
+
+    .rsvp-section .letter-card {
+      max-width: 460px;
+      width: 100%;
+      padding: 12% 11% 10%;
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.85s ease, transform 0.85s ease;
+    }
+    .rsvp-section .letter-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .rsvp-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 300; color: #2c3e22; margin-bottom: 0.3rem; }
+    .rsvp-subtitle { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: #6a8a50; margin-bottom: 1.6rem; }
+
+    .field-group { margin-bottom: 1.2rem; text-align: left; }
+    .field-group label { display: block; font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: #6a8a50; margin-bottom: 6px; }
     .field-group input, .field-group textarea {
-      width: 100%; background: rgba(255,255,255,0.05); border: 0.5px solid rgba(168,200,122,0.4);
-      border-radius: 2px; padding: 12px 14px; font-family: 'Lato', sans-serif; font-size: 14px;
-      color: #f0ede6; outline: none; transition: border-color 0.2s; resize: none;
+      width: 100%;
+      background: rgba(255,255,255,0.55);
+      border: 0.5px solid rgba(100,140,70,0.45);
+      border-radius: 2px;
+      padding: 10px 12px;
+      font-family: 'Lato', sans-serif;
+      font-size: 13px;
+      color: #2c3e22;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+      resize: none;
     }
-    .field-group input::placeholder, .field-group textarea::placeholder { color: rgba(184,200,168,0.4); }
-    .field-group input:focus, .field-group textarea:focus { border-color: rgba(168,200,122,0.8); background: rgba(255,255,255,0.07); }
+    .field-group input::placeholder, .field-group textarea::placeholder { color: rgba(80,110,55,0.4); }
+    .field-group input:focus, .field-group textarea:focus {
+      border-color: rgba(100,140,70,0.8);
+      background: rgba(255,255,255,0.8);
+    }
+
     .submit-btn {
-      width: 100%; margin-top: 0.5rem; padding: 13px; background: transparent;
-      border: 0.5px solid rgba(168,200,122,0.7); border-radius: 2px; font-family: 'Lato', sans-serif;
-      font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: #a8c87a;
+      width: 100%; margin-top: 0.4rem; padding: 11px;
+      background: transparent;
+      border: 0.5px solid rgba(90,122,68,0.6);
+      border-radius: 2px;
+      font-family: 'Lato', sans-serif;
+      font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+      color: #4a6a34;
       cursor: pointer; transition: background 0.2s;
     }
-    .submit-btn:hover:not(:disabled) { background: rgba(168,200,122,0.12); }
-    .submit-btn:disabled { opacity: 0.5; cursor: default; }
-    .status-msg { margin-top: 1.2rem; font-size: 12px; letter-spacing: 1px; min-height: 18px; color: #a8c87a; }
-    .status-msg.error { color: #e28a7a; }
-    .success-state { display: none; flex-direction: column; align-items: center; gap: 1rem; padding: 1rem 0; }
-    .success-icon { width: 48px; height: 48px; border: 0.5px solid #a8c87a; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #a8c87a; font-size: 22px; }
-    .success-title { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 300; color: #f0ede6; }
-    .success-sub { font-size: 12px; letter-spacing: 1.5px; color: #b8c8a8; }
-    @keyframes bounce { 0%, 100% { transform: rotate(45deg) translateY(0); } 50% { transform: rotate(45deg) translateY(5px); } }
+    .submit-btn:hover:not(:disabled) { background: rgba(100,140,70,0.1); }
+    .submit-btn:disabled { opacity: 0.45; cursor: default; }
+
+    .status-msg { margin-top: 1rem; font-size: 11px; letter-spacing: 1px; min-height: 16px; color: #5a7a40; }
+    .status-msg.error { color: #a04030; }
+
+    .success-state { display: none; flex-direction: column; align-items: center; gap: 0.9rem; padding: 0.5rem 0; }
+    .success-icon { width: 44px; height: 44px; border: 0.5px solid #8aaa62; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #5a7a45; font-size: 20px; }
+    .success-title { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 300; color: #2c3e22; }
+    .success-sub { font-size: 11px; letter-spacing: 1.5px; color: #4a6038; }
+
+    @keyframes bounce {
+      0%, 100% { transform: rotate(45deg) translateY(0); }
+      50% { transform: rotate(45deg) translateY(5px); }
+    }
   </style>
 </head>
 <body>
-  <div class="forest-bg"></div>
   <div class="page-content">
 
+    <!-- ── Hero ── -->
     <section class="hero">
-      <div style="display:flex;flex-direction:column;align-items:center;">
-        <div class="card">
+      <div class="hero-wrap">
+        <div class="letter-card">
           <div class="ornament">✦ ✦ ✦</div>
           <div class="tag">Save the Date</div>
-          <div class="names">Yeng Kwok<br><span class="ampersand">&amp;</span><br>Adam Wang</div>
+          <div class="names">
+            Yeng Kwok<br>
+            <span class="ampersand">&amp;</span><br>
+            Adam Wang
+          </div>
           <div class="divider"><div class="divider-line"></div><div class="divider-diamond"></div><div class="divider-line"></div></div>
           <div class="date-block">May 1st, 2027</div>
           <div class="venue-section">
-            <div class="divider" style="margin-top:1.4rem;"><div class="divider-line"></div><div class="divider-diamond"></div><div class="divider-line"></div></div>
+            <div class="divider" style="margin-top:1.2rem;"><div class="divider-line"></div><div class="divider-diamond"></div><div class="divider-line"></div></div>
             <div class="venue-name">InterContinental Chicago</div>
             <div class="venue-addr">505 N Michigan Ave · Chicago, Illinois 60611</div>
           </div>
@@ -108,12 +204,15 @@
       </div>
     </section>
 
+    <!-- ── Address form ── -->
     <section class="rsvp-section">
-      <div class="rsvp-card" id="rsvpCard">
+      <div class="letter-card" id="rsvpCard">
+
         <div id="formState">
           <div class="rsvp-title">Share your address</div>
           <div class="rsvp-subtitle">So we can send your formal invitation</div>
-          <div class="divider" style="margin:1.5rem auto;"><div class="divider-line"></div><div class="divider-diamond"></div><div class="divider-line"></div></div>
+          <div class="divider" style="margin:1.2rem auto;"><div class="divider-line"></div><div class="divider-diamond"></div><div class="divider-line"></div></div>
+
           <div class="field-group">
             <label for="partyName">Party name</label>
             <input type="text" id="partyName" placeholder="e.g. The Johnson Family" />
@@ -122,29 +221,36 @@
             <label for="mailingAddress">Mailing address</label>
             <textarea id="mailingAddress" rows="3" placeholder="Street, City, State, ZIP"></textarea>
           </div>
+
           <button class="submit-btn" id="submitBtn" onclick="handleSubmit()">Submit ✦</button>
           <div class="status-msg" id="statusMsg"></div>
         </div>
+
         <div class="success-state" id="successState">
           <div class="success-icon">✦</div>
           <div class="success-title">Thank you!</div>
           <div class="success-sub">We'll be in touch with your formal invitation.</div>
-          <div class="divider" style="margin:0.5rem auto;max-width:200px;"><div class="divider-line"></div><div class="divider-diamond"></div><div class="divider-line"></div></div>
-          <div style="font-size:12px;color:#7a9a60;letter-spacing:1px;">Yeng &amp; Adam · May 1st, 2027</div>
+          <div class="divider" style="margin:0.5rem auto;max-width:180px;"><div class="divider-line"></div><div class="divider-diamond"></div><div class="divider-line"></div></div>
+          <div style="font-size:11px;color:#6a8050;letter-spacing:1px;">Yeng &amp; Adam · May 1st, 2027</div>
         </div>
+
       </div>
     </section>
 
   </div>
 
   <script>
-    var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwu_X-k0d39XcjXQGEW5IyghrncDPGTQk8nJByQdVVTx3MTi_WKg21HACGErGXzqKD3/exec";
+    // ★ Replace with your Google Apps Script Web App URL
+    var SCRIPT_URL = "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE";
 
     var observer = new IntersectionObserver(function(entries) {
       entries.forEach(function(e) {
-        if (e.isIntersecting) { document.getElementById("rsvpCard").classList.add("visible"); observer.disconnect(); }
+        if (e.isIntersecting) {
+          document.getElementById("rsvpCard").classList.add("visible");
+          observer.disconnect();
+        }
       });
-    }, { threshold: 0.2 });
+    }, { threshold: 0.15 });
     observer.observe(document.getElementById("rsvpCard"));
 
     function handleSubmit() {
