@@ -4,10 +4,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Save the Date — Yeng & Adam · May 1st, 2027</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Lato:wght@300;400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Lato:wght@300;400&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
+
+    :root {
+      --green: #1a4a2e;
+      --green-mid: #2a5c3a;
+      --green-light: #4a7a58;
+      --card-bg: #c8c4b0; /* fallback if letter.jpg absent */
+    }
 
     body {
       min-height: 100vh;
@@ -15,7 +22,6 @@
       background: url('assets/background.jpg') center center / cover fixed;
     }
 
-    /* dark overlay so text stays readable */
     body::before {
       content: '';
       position: fixed;
@@ -29,11 +35,23 @@
 
     /* ── Shared letter card ── */
     .letter-card {
-      background: url("assets/letter.jpg") center center / 100% 100% no-repeat;
+      background: url("assets/letter.jpg") center center / 100% 100% no-repeat, var(--card-bg);
       border: none;
       border-radius: 4px;
       position: relative;
       text-align: center;
+    }
+
+    /* ══════════════════════════════════════
+       SVG EMBOSSED BORDER (drawn in JS)
+       Sits as an absolutely-positioned layer
+       ══════════════════════════════════════ */
+    .hero .letter-card svg.emboss-frame {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
     }
 
     /* ── Hero ── */
@@ -57,44 +75,95 @@
     .hero .letter-card {
       width: min(100%, calc(90vh * 15 / 21));
       aspect-ratio: 15 / 21;
-      padding: 64px 80px 56px;
+      padding: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
     }
 
-    .ornament { color: #4a6a38; font-size: 14px; letter-spacing: 5px; margin-bottom: 0.5rem; }
-    .tag { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 22px; font-weight: 300; letter-spacing: 2px; color: #2c3e22; margin-bottom: 1.2rem; }
+    /* ── Hero card inner content ── */
+    .hero-inner {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      padding: clamp(40px, 9%, 96px) clamp(32px, 10%, 100px);
+    }
 
-    .names {
+    .hero-save-the-date {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(24px, 3.5vw, 38px);
-      font-weight: 300;
-      line-height: 1.2;
-      color: #2c3e22;
+      font-weight: 600;
+      font-size: clamp(18px, 4vw, 34px);
+      letter-spacing: 0.28em;
       text-transform: uppercase;
-      letter-spacing: 3px;
+      color: var(--green);
+      margin-bottom: 0.55em;
     }
-    .ampersand { font-style: italic; color: #2c3e22; text-transform: none; letter-spacing: 0; }
 
-    .divider { display: flex; align-items: center; gap: 10px; margin: 1.1rem auto; max-width: 260px; }
-    .divider-line { flex: 1; height: 0.5px; background: #8aaa62; opacity: 0.7; }
-    .divider-diamond { width: 5px; height: 5px; background: #8aaa62; transform: rotate(45deg); flex-shrink: 0; }
-
-    .date-block {
+    .hero-subtitle {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(14px, 3vw, 18px);
-      font-weight: 300;
-      color: #2c3e22;
-      letter-spacing: 2px;
-      margin: 0.4rem 0 0.3rem;
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(14px, 2.4vw, 22px);
+      color: var(--green-mid);
+      letter-spacing: 0.04em;
+      margin-bottom: 1.4em;
     }
 
-    .venue-section { margin-top: 1.4rem; }
-    .venue-name { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 19px; font-weight: 300; color: #2c3e22; margin-bottom: 5px; }
-    .venue-addr { font-size: 10px; letter-spacing: 1.5px; color: #2c3e22; line-height: 2; }
-    .footer-note { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 15px; font-weight: 300; color: #2c3e22; margin-top: 1.5rem; }
+    .hero-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 700;
+      font-size: clamp(18px, 4vw, 34px);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--green);
+      line-height: 1.15;
+    }
+
+    .hero-and {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 500;
+      font-size: clamp(10px, 1.8vw, 15px);
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--green-mid);
+      margin: 0.55em 0;
+    }
+
+    .hero-rule-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      width: 62%;
+      margin: 1.4em auto 0;
+    }
+    .hero-rule { width: 100%; height: 0.5px; background: var(--green); opacity: 0.45; }
+
+    .hero-date {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 500;
+      font-size: clamp(13px, 2.5vw, 20px);
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--green);
+      padding: 0.6em 0;
+    }
+
+    .hero-venue {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(15px, 2.7vw, 24px);
+      color: var(--green-mid);
+      margin-top: 1em;
+      letter-spacing: 0.04em;
+    }
 
     .scroll-hint {
       margin-top: 1.4rem;
@@ -133,26 +202,56 @@
       opacity: 1;
       transform: translateY(0);
     }
+    .rsvp-section .letter-card.hidden {
+      opacity: 0;
+      transform: translateY(40px);
+    }
 
-    .rsvp-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 300; color: #2c3e22; margin-bottom: 0.3rem; }
-    .rsvp-subtitle { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: #6a8a50; margin-bottom: 1.6rem; }
+    .rsvp-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 600;
+      font-size: clamp(18px, 4vw, 34px);
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 0.3rem;
+    }
+    .rsvp-subtitle {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(14px, 2.4vw, 22px);
+      color: var(--green-mid);
+      letter-spacing: 0.04em;
+      margin-bottom: 1.6rem;
+    }
+
+    .form-inner { width: 68%; }
 
     .field-group { margin-bottom: 1.2rem; text-align: left; }
-    .field-group label { display: block; font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: #6a8a50; margin-bottom: 6px; }
+    .field-group label {
+      display: block;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(10px, 1.6vw, 14px);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--green-mid);
+      margin-bottom: 6px;
+    }
     .field-group input, .field-group textarea {
       width: 100%;
       background: rgba(255,255,255,0.55);
       border: 0.5px solid rgba(100,140,70,0.45);
       border-radius: 2px;
       padding: 10px 12px;
-      font-family: 'Lato', sans-serif;
-      font-size: 13px;
-      color: #2c3e22;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(13px, 1.8vw, 16px);
+      color: var(--green);
       outline: none;
       transition: border-color 0.2s, background 0.2s;
       resize: none;
     }
-    .field-group input::placeholder, .field-group textarea::placeholder { color: rgba(80,110,55,0.4); }
+    .field-group input::placeholder, .field-group textarea::placeholder { color: rgba(80,110,55,0.35); }
     .field-group input:focus, .field-group textarea:focus {
       border-color: rgba(100,140,70,0.8);
       background: rgba(255,255,255,0.8);
@@ -160,18 +259,21 @@
 
     .submit-btn {
       width: 100%; margin-top: 0.4rem; padding: 11px;
-      background: transparent;
-      border: 0.5px solid rgba(90,122,68,0.6);
+      background: rgba(42, 92, 58, 1);
+      border: none;
       border-radius: 2px;
-      font-family: 'Lato', sans-serif;
-      font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
-      color: #4a6a34;
-      cursor: pointer; transition: background 0.2s;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(11px, 1.6vw, 14px);
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: #f0ede6;
+      cursor: pointer;
+      transition: background 0.2s;
     }
-    .submit-btn:hover:not(:disabled) { background: rgba(100,140,70,0.1); }
+    .submit-btn:hover:not(:disabled) { background: rgba(26, 74, 46, 1); }
     .submit-btn:disabled { opacity: 0.45; cursor: default; }
 
-    #formState { width: 100%; }
+    #formState { width: 100%; display: flex; flex-direction: column; align-items: center; }
     .status-msg { margin-top: 1rem; font-size: 11px; letter-spacing: 1px; min-height: 16px; color: #5a7a40; }
 
     .success-state { display: none; flex-direction: column; align-items: center; gap: 0.9rem; padding: 0.5rem 0; }
@@ -191,21 +293,26 @@
     <!-- ── Hero ── -->
     <section class="hero">
       <div class="hero-wrap">
-        <div class="letter-card">
-          <div class="ornament">✦ ✦ ✦</div>
-          <div class="tag">Save the Date</div>
-          <div class="names">
-            Yeng Lan Kwok<br>
-            <span class="ampersand">&amp;</span><br>
-            Kaifeng Adam Wang
+        <div class="letter-card" id="heroCard">
+
+          <!-- SVG embossed frame injected by JS -->
+
+          <div class="hero-inner">
+            <div class="hero-save-the-date">Save the Date</div>
+            <div class="hero-subtitle">to celebrate the wedding of</div>
+
+            <div class="hero-name">Yeng Lan Kwok</div>
+            <div class="hero-and">and</div>
+            <div class="hero-name">Kaifeng Adam Wang</div>
+
+            <div class="hero-rule-group">
+              <div class="hero-rule"></div>
+              <div class="hero-date">May 1, 2027</div>
+              <div class="hero-rule"></div>
+            </div>
+
+            <div class="hero-venue">Chicago, Illinois</div>
           </div>
-          <div class="divider"><div class="divider-line"></div><div class="divider-diamond"></div><div class="divider-line"></div></div>
-          <div class="date-block">May 1st, 2027</div>
-          <div class="venue-section">
-            <div class="divider" style="margin-top:1.2rem;"><div class="divider-line"></div><div class="divider-diamond"></div><div class="divider-line"></div></div>
-            <div class="venue-name">Chicago, Illinois</div>
-          </div>
-          <div class="footer-note">Formal invitation to follow</div>
         </div>
         <div class="scroll-hint">
           <div class="scroll-arrow"></div>
@@ -219,20 +326,21 @@
 
         <div id="formState">
           <div class="rsvp-title">Share your address</div>
-          <div class="rsvp-subtitle">So we can send your formal invitation</div>
-          <div class="divider" style="margin:1.2rem auto;"><div class="divider-line"></div><div class="divider-diamond"></div><div class="divider-line"></div></div>
+          <div class="rsvp-subtitle">so we can send your formal invitation</div>
 
-          <div class="field-group">
-            <label for="partyName">Party name</label>
-            <input type="text" id="partyName" placeholder="e.g. The Johnson Family" />
-          </div>
-          <div class="field-group">
-            <label for="mailingAddress">Mailing address</label>
-            <textarea id="mailingAddress" rows="3" placeholder="Street, City, State, ZIP"></textarea>
-          </div>
+          <div class="form-inner">
+            <div class="field-group">
+              <label for="partyName">Party name</label>
+              <input type="text" id="partyName" placeholder="e.g. The Johnson Family" />
+            </div>
+            <div class="field-group">
+              <label for="mailingAddress">Mailing address</label>
+              <textarea id="mailingAddress" rows="3" placeholder="Street, City, State, ZIP"></textarea>
+            </div>
 
-          <button class="submit-btn" id="submitBtn" onclick="handleSubmit()">Submit ✦</button>
-          <div class="status-msg" id="statusMsg"></div>
+            <button class="submit-btn" id="submitBtn" onclick="handleSubmit()">Submit ✦</button>
+            <div class="status-msg" id="statusMsg"></div>
+          </div>
         </div>
 
         <div class="success-state" id="successState">
@@ -249,18 +357,178 @@
   </div>
 
   <script>
-    // ★ Replace with your Google Apps Script Web App URL
-    var SCRIPT_URL = "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE";
+    // ── Embossed SVG border frame ──────────────────────────────────────────────
+    (function() {
+      var card = document.getElementById('heroCard');
+      var ns = 'http://www.w3.org/2000/svg';
+
+      var svg = document.createElementNS(ns, 'svg');
+      svg.setAttribute('class', 'emboss-frame');
+      svg.setAttribute('viewBox', '0 0 300 420');
+      svg.setAttribute('preserveAspectRatio', 'none');
+      svg.setAttribute('xmlns', ns);
+
+      // Emboss filter: gives the raised/pressed look
+      var defs = document.createElementNS(ns, 'defs');
+      defs.innerHTML = `
+        <filter id="emboss" x="-5%" y="-5%" width="110%" height="110%">
+          <feGaussianBlur in="SourceAlpha" stdDeviation="1.2" result="blur"/>
+          <feOffset dx="-0.8" dy="-0.8" in="blur" result="shadow"/>
+          <feOffset dx="0.8" dy="0.8" in="blur" result="highlight"/>
+          <feComposite in="shadow" in2="SourceAlpha" operator="in" result="shadow2"/>
+          <feComposite in="highlight" in2="SourceAlpha" operator="in" result="highlight2"/>
+          <feFlood flood-color="rgba(255,255,255,0.55)" result="white"/>
+          <feFlood flood-color="rgba(80,70,50,0.28)" result="dark"/>
+          <feComposite in="white" in2="highlight2" operator="in" result="whiteHighlight"/>
+          <feComposite in="dark" in2="shadow2" operator="in" result="darkShadow"/>
+          <feMerge>
+            <feMergeNode in="SourceGraphic"/>
+            <feMergeNode in="darkShadow"/>
+            <feMergeNode in="whiteHighlight"/>
+          </feMerge>
+        </filter>
+
+        <!-- Floral corner motif -->
+        <g id="floral">
+          <!-- centre bloom -->
+          <circle cx="0" cy="0" r="3.5" fill="none" stroke="currentColor" stroke-width="0.8"/>
+          <circle cx="0" cy="0" r="1.4" fill="currentColor"/>
+          <!-- petals -->
+          <ellipse cx="0" cy="-6.5" rx="1.5" ry="3" fill="currentColor" transform="rotate(0)"/>
+          <ellipse cx="0" cy="-6.5" rx="1.5" ry="3" fill="currentColor" transform="rotate(45)"/>
+          <ellipse cx="0" cy="-6.5" rx="1.5" ry="3" fill="currentColor" transform="rotate(90)"/>
+          <ellipse cx="0" cy="-6.5" rx="1.5" ry="3" fill="currentColor" transform="rotate(135)"/>
+          <ellipse cx="0" cy="-6.5" rx="1.5" ry="3" fill="currentColor" transform="rotate(180)"/>
+          <ellipse cx="0" cy="-6.5" rx="1.5" ry="3" fill="currentColor" transform="rotate(225)"/>
+          <ellipse cx="0" cy="-6.5" rx="1.5" ry="3" fill="currentColor" transform="rotate(270)"/>
+          <ellipse cx="0" cy="-6.5" rx="1.5" ry="3" fill="currentColor" transform="rotate(315)"/>
+          <!-- leaves -->
+          <ellipse cx="0" cy="-13" rx="2" ry="4.5" fill="currentColor" transform="rotate(30)"/>
+          <ellipse cx="0" cy="-13" rx="2" ry="4.5" fill="currentColor" transform="rotate(330)"/>
+          <ellipse cx="0" cy="-13" rx="2" ry="4.5" fill="currentColor" transform="rotate(90)"/>
+          <ellipse cx="0" cy="-13" rx="2" ry="4.5" fill="currentColor" transform="rotate(150)"/>
+          <ellipse cx="0" cy="-13" rx="2" ry="4.5" fill="currentColor" transform="rotate(210)"/>
+          <ellipse cx="0" cy="-13" rx="2" ry="4.5" fill="currentColor" transform="rotate(270)"/>
+        </g>
+      `;
+      svg.appendChild(defs);
+
+      var color = 'rgba(180,174,152,0.75)'; // embossed linen tone — light against card
+      var colorHighlight = 'rgba(210,205,188,0.9)';
+
+      function el(tag, attrs, parent) {
+        var e = document.createElementNS(ns, tag);
+        Object.keys(attrs).forEach(function(k){ e.setAttribute(k, attrs[k]); });
+        if (parent) parent.appendChild(e);
+        return e;
+      }
+
+      var g = el('g', { filter: 'url(#emboss)', color: color }, svg);
+
+      // ── Outer decorative border (rounded rect) ──
+      el('rect', {
+        x: '10', y: '10', width: '280', height: '400', rx: '22', ry: '22',
+        fill: 'none', stroke: color, 'stroke-width': '1.2'
+      }, g);
+
+      // ── Inner frame (closer) ──
+      el('rect', {
+        x: '16', y: '16', width: '268', height: '388', rx: '18', ry: '18',
+        fill: 'none', stroke: color, 'stroke-width': '0.6', 'stroke-dasharray': '0'
+      }, g);
+
+      // ── Beaded dots along top & bottom ──
+      var beadY = [7, 413];
+      beadY.forEach(function(by) {
+        for (var bx = 60; bx <= 240; bx += 12) {
+          el('circle', { cx: bx, cy: by, r: '1.5', fill: color }, g);
+        }
+      });
+
+      // ── Beaded dots along left & right ──
+      var beadX = [7, 293];
+      beadX.forEach(function(bx) {
+        for (var by = 60; by <= 360; by += 12) {
+          el('circle', { cx: bx, cy: by, r: '1.5', fill: color }, g);
+        }
+      });
+
+      // ── Corner scrollwork (top-left, mirrored) ──
+      // top-left
+      var scrolls = [
+        // path, transform
+        ['M 10,42 Q 10,22 22,16 Q 30,12 42,10', 'translate(0,0)'],  // outer arc
+      ];
+
+      function drawCornerScroll(gEl, tx, ty, scaleX, scaleY) {
+        var cg = el('g', { transform: 'translate('+tx+','+ty+') scale('+scaleX+','+scaleY+')' }, gEl);
+        // inner rounded corner connection
+        el('path', {
+          d: 'M 28,16 Q 16,16 16,28',
+          fill: 'none', stroke: color, 'stroke-width': '1.5', 'stroke-linecap': 'round'
+        }, cg);
+        // scroll flourish on top edge
+        el('path', {
+          d: 'M 42,10 Q 32,10 28,14 Q 24,18 28,22 Q 32,26 28,28',
+          fill: 'none', stroke: color, 'stroke-width': '1', 'stroke-linecap': 'round'
+        }, cg);
+        // scroll flourish on left edge
+        el('path', {
+          d: 'M 10,42 Q 10,32 14,28 Q 18,24 22,28 Q 26,32 28,28',
+          fill: 'none', stroke: color, 'stroke-width': '1', 'stroke-linecap': 'round'
+        }, cg);
+        // anchor dot
+        el('circle', { cx: '28', cy: '28', r: '2.2', fill: color }, cg);
+        // small dot accents
+        el('circle', { cx: '28', cy: '22', r: '1.2', fill: color }, cg);
+        el('circle', { cx: '22', cy: '28', r: '1.2', fill: color }, cg);
+      }
+
+      // top-left
+      drawCornerScroll(g, 0, 0, 1, 1);
+      // top-right
+      drawCornerScroll(g, 300, 0, -1, 1);
+      // bottom-left
+      drawCornerScroll(g, 0, 420, 1, -1);
+      // bottom-right
+      drawCornerScroll(g, 300, 420, -1, -1);
+
+      // ── Floral corner motifs ──
+      function addFloral(tx, ty, rot) {
+        var fg = el('g', {
+          transform: 'translate('+tx+','+ty+') rotate('+rot+')',
+          color: color
+        }, g);
+        el('use', { href: '#floral' }, fg);
+      }
+      addFloral(32, 32, 0);
+      addFloral(268, 32, 90);
+      addFloral(32, 388, 270);
+      addFloral(268, 388, 180);
+
+      card.insertBefore(svg, card.firstChild);
+    })();
+  </script>
+
+  <script>
+    var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwu_X-k0d39XcjXQGEW5IyghrncDPGTQk8nJByQdVVTx3MTi_WKg21HACGErGXzqKD3/exec";
+
+    var rsvpCard = document.getElementById("rsvpCard");
+    var hasBeenVisible = false;
 
     var observer = new IntersectionObserver(function(entries) {
       entries.forEach(function(e) {
         if (e.isIntersecting) {
-          document.getElementById("rsvpCard").classList.add("visible");
-          observer.disconnect();
+          hasBeenVisible = true;
+          rsvpCard.classList.remove("hidden");
+          rsvpCard.classList.add("visible");
+        } else if (hasBeenVisible) {
+          rsvpCard.classList.remove("visible");
+          rsvpCard.classList.add("hidden");
         }
       });
-    }, { threshold: 0.15 });
-    observer.observe(document.getElementById("rsvpCard"));
+    }, { threshold: 0.4 });
+    observer.observe(rsvpCard);
 
     function handleSubmit() {
       var partyName = document.getElementById("partyName").value.trim();
