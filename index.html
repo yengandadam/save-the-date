@@ -92,13 +92,13 @@
       justify-content: center;
       width: 100%;
       height: 100%;
-      padding: 96px 100px;
+      padding: clamp(40px, 9%, 96px) clamp(32px, 10%, 100px);
     }
 
     .hero-save-the-date {
       font-family: 'Cormorant Garamond', serif;
       font-weight: 600;
-      font-size: 34px;
+      font-size: clamp(18px, 4vw, 34px);
       letter-spacing: 0.28em;
       text-transform: uppercase;
       color: var(--green);
@@ -109,7 +109,7 @@
       font-family: 'Cormorant Garamond', serif;
       font-style: italic;
       font-weight: 400;
-      font-size: 22px;
+      font-size: clamp(14px, 2.4vw, 22px);
       color: var(--green-mid);
       letter-spacing: 0.04em;
       margin-bottom: 1.4em;
@@ -118,7 +118,7 @@
     .hero-name {
       font-family: 'Cormorant Garamond', serif;
       font-weight: 700;
-      font-size: 34px;
+      font-size: clamp(18px, 4vw, 34px);
       letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--green);
@@ -128,7 +128,7 @@
     .hero-and {
       font-family: 'Cormorant Garamond', serif;
       font-weight: 500;
-      font-size: 15px;
+      font-size: clamp(10px, 1.8vw, 15px);
       letter-spacing: 0.4em;
       text-transform: uppercase;
       color: var(--green-mid);
@@ -148,7 +148,7 @@
     .hero-date {
       font-family: 'Cormorant Garamond', serif;
       font-weight: 500;
-      font-size: 20px;
+      font-size: clamp(13px, 2.5vw, 20px);
       letter-spacing: 0.32em;
       text-transform: uppercase;
       color: var(--green);
@@ -159,7 +159,7 @@
       font-family: 'Cormorant Garamond', serif;
       font-style: italic;
       font-weight: 400;
-      font-size: 24px;
+      font-size: clamp(15px, 2.7vw, 24px);
       color: var(--green-mid);
       margin-top: 1em;
       letter-spacing: 0.04em;
@@ -210,7 +210,7 @@
     .rsvp-title {
       font-family: 'Cormorant Garamond', serif;
       font-weight: 600;
-      font-size: 34px;
+      font-size: clamp(18px, 4vw, 34px);
       letter-spacing: 0.28em;
       text-transform: uppercase;
       color: var(--green);
@@ -220,7 +220,7 @@
       font-family: 'Cormorant Garamond', serif;
       font-style: italic;
       font-weight: 400;
-      font-size: 22px;
+      font-size: clamp(14px, 2.4vw, 22px);
       color: var(--green-mid);
       letter-spacing: 0.04em;
       margin-bottom: 1.6rem;
@@ -232,7 +232,7 @@
     .field-group label {
       display: block;
       font-family: 'Cormorant Garamond', serif;
-      font-size: 14px;
+      font-size: clamp(10px, 1.6vw, 14px);
       letter-spacing: 0.2em;
       text-transform: uppercase;
       color: var(--green-mid);
@@ -245,7 +245,7 @@
       border-radius: 2px;
       padding: 10px 12px;
       font-family: 'Cormorant Garamond', serif;
-      font-size: 16px;
+      font-size: clamp(13px, 1.8vw, 16px);
       color: var(--green);
       outline: none;
       transition: border-color 0.2s, background 0.2s;
@@ -263,7 +263,7 @@
       border: none;
       border-radius: 2px;
       font-family: 'Cormorant Garamond', serif;
-      font-size: 14px;
+      font-size: clamp(11px, 1.6vw, 14px);
       letter-spacing: 0.25em;
       text-transform: uppercase;
       color: #f0ede6;
