@@ -13,7 +13,11 @@
       --green: #1a4a2e;
       --green-mid: #2a5c3a;
       --green-light: #4a7a58;
-      --card-bg: #c8c4b0; /* fallback if letter.jpg absent */
+      --card-bg: #c8c4b0;
+      /* Reference card width for the greeting page font sizing.
+         We use a CSS custom property set by JS once the card is measured,
+         but we also define a vw-based fallback so it renders immediately. */
+      --card-w: min(100vw - 3rem, calc(90vh * 15 / 21));
     }
 
     body {
@@ -45,7 +49,6 @@
 
     /* ══════════════════════════════════════
        SVG EMBOSSED BORDER (drawn in JS)
-       Sits as an absolutely-positioned layer
        ══════════════════════════════════════ */
     .hero .letter-card svg.emboss-frame {
       position: absolute;
@@ -55,7 +58,75 @@
       pointer-events: none;
     }
 
-    /* ── Hero ── */
+    /* ─────────────────────────────────────
+       PAGE 1 — GREETING
+       Full-viewport section, no card.
+       Font sizes derived from --card-w so
+       they stay proportional to the card.
+    ───────────────────────────────────────*/
+    .greeting-section {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 1.5rem;
+    }
+
+    .greeting-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      width: 100%;
+      max-width: 720px;
+    }
+
+    /* Ghost container — same width as the card but zero height,
+       just so container queries give us the same cqi scale. */
+    .greeting-sizer {
+      width: min(100%, calc(90vh * 15 / 21));
+      container-type: inline-size;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .greeting-to {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: 3.7cqi;       /* matches .hero-venue exactly */
+      letter-spacing: 0.04em;
+      color: #f0ede6;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.45);
+      text-align: center;
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 1s ease 0.1s, transform 1s ease 0.1s;
+    }
+
+    .greeting-to.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .greeting-scroll-hint {
+      margin-top: 2.4rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      color: rgba(240, 237, 230, 0.6);
+    }
+
+    .greeting-scroll-hint span {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 2cqi;
+      letter-spacing: 0.12em;
+    }
+
+    /* ── PAGE 2 — Hero ── */
     .hero {
       min-height: 100vh;
       display: flex;
@@ -81,6 +152,17 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.85s ease, transform 0.85s ease;
+    }
+    .hero .letter-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .hero .letter-card.hidden {
+      opacity: 0;
+      transform: translateY(40px);
     }
 
     /* ── Hero card inner content ── */
@@ -94,16 +176,6 @@
       width: 100%;
       height: 100%;
       padding: 9cqi 10cqi;
-    }
-
-    .hero-to {
-      font-family: 'Cormorant Garamond', serif;
-      font-weight: 600;
-      font-size: 5.2cqi;
-      letter-spacing: 0.28em;
-      text-transform: uppercase;
-      color: var(--green);
-      margin-bottom: 0.55em;
     }
 
     .hero-save-the-date {
@@ -190,7 +262,7 @@
       animation: bounce 1.6s ease infinite;
     }
 
-    /* ── RSVP section ── */
+    /* ── PAGE 3 — RSVP ── */
     .rsvp-section {
       min-height: 100vh;
       display: flex; align-items: center; justify-content: center;
@@ -301,7 +373,20 @@
 <body>
   <div class="page-content">
 
-    <!-- ── Hero ── -->
+    <!-- ── PAGE 1: Greeting ── -->
+    <section class="greeting-section">
+      <div class="greeting-wrap">
+        <div class="greeting-sizer">
+          <div class="greeting-to" id="greetingTo">To: Yeng and Adam</div>
+          <div class="greeting-scroll-hint">
+            <span>scroll</span>
+            <div class="scroll-arrow" style="margin-top:4px;"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── PAGE 2: Hero card ── -->
     <section class="hero">
       <div class="hero-wrap">
         <div class="letter-card" id="heroCard">
@@ -309,7 +394,6 @@
           <!-- SVG embossed frame injected by JS -->
 
           <div class="hero-inner">
-            <div class="hero-to" id="hero-to"></div>
             <div class="hero-save-the-date">Save the Date</div>
             <div class="hero-subtitle">to celebrate the wedding of</div>
 
@@ -332,7 +416,7 @@
       </div>
     </section>
 
-    <!-- ── Address form ── -->
+    <!-- ── PAGE 3: Address form ── -->
     <section class="rsvp-section">
       <div class="letter-card" id="rsvpCard">
 
@@ -380,7 +464,6 @@
       svg.setAttribute('preserveAspectRatio', 'none');
       svg.setAttribute('xmlns', ns);
 
-      // Emboss filter: gives the raised/pressed look
       var defs = document.createElementNS(ns, 'defs');
       defs.innerHTML = `
         <filter id="emboss" x="-5%" y="-5%" width="110%" height="110%">
@@ -400,12 +483,9 @@
           </feMerge>
         </filter>
 
-        <!-- Floral corner motif -->
         <g id="floral">
-          <!-- centre bloom -->
           <circle cx="0" cy="0" r="3.5" fill="none" stroke="currentColor" stroke-width="0.8"/>
           <circle cx="0" cy="0" r="1.4" fill="currentColor"/>
-          <!-- petals -->
           <ellipse cx="0" cy="-6.5" rx="1.5" ry="3" fill="currentColor" transform="rotate(0)"/>
           <ellipse cx="0" cy="-6.5" rx="1.5" ry="3" fill="currentColor" transform="rotate(45)"/>
           <ellipse cx="0" cy="-6.5" rx="1.5" ry="3" fill="currentColor" transform="rotate(90)"/>
@@ -414,7 +494,6 @@
           <ellipse cx="0" cy="-6.5" rx="1.5" ry="3" fill="currentColor" transform="rotate(225)"/>
           <ellipse cx="0" cy="-6.5" rx="1.5" ry="3" fill="currentColor" transform="rotate(270)"/>
           <ellipse cx="0" cy="-6.5" rx="1.5" ry="3" fill="currentColor" transform="rotate(315)"/>
-          <!-- leaves -->
           <ellipse cx="0" cy="-13" rx="2" ry="4.5" fill="currentColor" transform="rotate(30)"/>
           <ellipse cx="0" cy="-13" rx="2" ry="4.5" fill="currentColor" transform="rotate(330)"/>
           <ellipse cx="0" cy="-13" rx="2" ry="4.5" fill="currentColor" transform="rotate(90)"/>
@@ -425,8 +504,7 @@
       `;
       svg.appendChild(defs);
 
-      var color = 'rgba(180,174,152,0.75)'; // embossed linen tone — light against card
-      var colorHighlight = 'rgba(210,205,188,0.9)';
+      var color = 'rgba(180,174,152,0.75)';
 
       function el(tag, attrs, parent) {
         var e = document.createElementNS(ns, tag);
@@ -437,19 +515,16 @@
 
       var g = el('g', { filter: 'url(#emboss)', color: color }, svg);
 
-      // ── Outer decorative border (rounded rect) ──
       el('rect', {
         x: '10', y: '10', width: '280', height: '400', rx: '22', ry: '22',
         fill: 'none', stroke: color, 'stroke-width': '1.2'
       }, g);
 
-      // ── Inner frame (closer) ──
       el('rect', {
         x: '16', y: '16', width: '268', height: '388', rx: '18', ry: '18',
         fill: 'none', stroke: color, 'stroke-width': '0.6', 'stroke-dasharray': '0'
       }, g);
 
-      // ── Beaded dots along top & bottom ──
       var beadY = [7, 413];
       beadY.forEach(function(by) {
         for (var bx = 60; bx <= 240; bx += 12) {
@@ -457,7 +532,6 @@
         }
       });
 
-      // ── Beaded dots along left & right ──
       var beadX = [7, 293];
       beadX.forEach(function(bx) {
         for (var by = 60; by <= 360; by += 12) {
@@ -465,47 +539,30 @@
         }
       });
 
-      // ── Corner scrollwork (top-left, mirrored) ──
-      // top-left
-      var scrolls = [
-        // path, transform
-        ['M 10,42 Q 10,22 22,16 Q 30,12 42,10', 'translate(0,0)'],  // outer arc
-      ];
-
       function drawCornerScroll(gEl, tx, ty, scaleX, scaleY) {
         var cg = el('g', { transform: 'translate('+tx+','+ty+') scale('+scaleX+','+scaleY+')' }, gEl);
-        // inner rounded corner connection
         el('path', {
           d: 'M 28,16 Q 16,16 16,28',
           fill: 'none', stroke: color, 'stroke-width': '1.5', 'stroke-linecap': 'round'
         }, cg);
-        // scroll flourish on top edge
         el('path', {
           d: 'M 42,10 Q 32,10 28,14 Q 24,18 28,22 Q 32,26 28,28',
           fill: 'none', stroke: color, 'stroke-width': '1', 'stroke-linecap': 'round'
         }, cg);
-        // scroll flourish on left edge
         el('path', {
           d: 'M 10,42 Q 10,32 14,28 Q 18,24 22,28 Q 26,32 28,28',
           fill: 'none', stroke: color, 'stroke-width': '1', 'stroke-linecap': 'round'
         }, cg);
-        // anchor dot
         el('circle', { cx: '28', cy: '28', r: '2.2', fill: color }, cg);
-        // small dot accents
         el('circle', { cx: '28', cy: '22', r: '1.2', fill: color }, cg);
         el('circle', { cx: '22', cy: '28', r: '1.2', fill: color }, cg);
       }
 
-      // top-left
       drawCornerScroll(g, 0, 0, 1, 1);
-      // top-right
       drawCornerScroll(g, 300, 0, -1, 1);
-      // bottom-left
       drawCornerScroll(g, 0, 420, 1, -1);
-      // bottom-right
       drawCornerScroll(g, 300, 420, -1, -1);
 
-      // ── Floral corner motifs ──
       function addFloral(tx, ty, rot) {
         var fg = el('g', {
           transform: 'translate('+tx+','+ty+') rotate('+rot+')',
@@ -523,12 +580,36 @@
   </script>
 
   <script>
-    var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwu_X-k0d39XcjXQGEW5IyghrncDPGTQk8nJByQdVVTx3MTi_WKg21HACGErGXzqKD3/exec";
+    // ── Intersection observers ─────────────────────────────────────────────────
 
+    // Page 1 greeting — fade in on load
+    var greetingEl = document.getElementById('greetingTo');
+    // Small delay so the fade feels intentional
+    setTimeout(function() { greetingEl.classList.add('visible'); }, 200);
+
+    // Page 2 hero card — slide in/out on scroll
+    var heroCard = document.getElementById("heroCard");
+    var heroBeenVisible = false;
+
+    var heroObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) {
+          heroBeenVisible = true;
+          heroCard.classList.remove("hidden");
+          heroCard.classList.add("visible");
+        } else if (heroBeenVisible) {
+          heroCard.classList.remove("visible");
+          heroCard.classList.add("hidden");
+        }
+      });
+    }, { threshold: 0.65 });
+    heroObserver.observe(heroCard);
+
+    // Page 3 RSVP card — slide in/out on scroll
     var rsvpCard = document.getElementById("rsvpCard");
     var hasBeenVisible = false;
 
-    var observer = new IntersectionObserver(function(entries) {
+    var rsvpObserver = new IntersectionObserver(function(entries) {
       entries.forEach(function(e) {
         if (e.isIntersecting) {
           hasBeenVisible = true;
@@ -539,8 +620,11 @@
           rsvpCard.classList.add("hidden");
         }
       });
-    }, { threshold: 0.4 });
-    observer.observe(rsvpCard);
+    }, { threshold: 0.65 });
+    rsvpObserver.observe(rsvpCard);
+
+    // ── RSVP form submit ──────────────────────────────────────────────────────
+    var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwu_X-k0d39XcjXQGEW5IyghrncDPGTQk8nJByQdVVTx3MTi_WKg21HACGErGXzqKD3/exec";
 
     function handleSubmit() {
       var partyName = document.getElementById("partyName").value.trim();
@@ -573,39 +657,34 @@
   </script>
 
   <script>
-    // ── CONFIG — fill these in ──────────────────────────────
+    // ── Guest lookup via Google Sheets API ────────────────────────────────────
     var SHEET_ID  = "1MKSzGyvsqkqM5AbEqpS9H9WwJz-3posmsl-EhCA9s5g";
     var API_KEY   = "AIzaSyDkkITiuRuMkuHpIWzHU9NhHoMqrkaJRCI";
-    var SHEET_TAB = "Sheet1"; // tab name at the bottom of your sheet
-    // ────────────────────────────────────────────────────────
+    var SHEET_TAB = "Sheet1";
 
-    // ── Read ?id= from URL ──
     var guestId = new URLSearchParams(window.location.search).get("id");
 
-    // ── Fetch guest name from Sheets API ──
     async function loadGuestName() {
-      if (!guestId) return; // no id = show default names as-is
+      if (!guestId) return; // no id → keep default "To: Yeng and Adam"
 
       var url = "https://sheets.googleapis.com/v4/spreadsheets/"
-        + SHEET_ID
-        + "/values/"
+        + SHEET_ID + "/values/"
         + encodeURIComponent(SHEET_TAB + "!A:B")
         + "?key=" + API_KEY;
 
-        try {
-          var res  = await fetch(url);
-          var data = await res.json();
-          var rows = data.values || [];
-          var match = rows.find(function(row) { return row[0] === guestId; });
+      try {
+        var res  = await fetch(url);
+        var data = await res.json();
+        var rows = data.values || [];
+        var match = rows.find(function(row) { return row[0] === guestId; });
 
-          if (match && match[1]) {
-            var toEl = document.getElementById("hero-to");
-            toEl.textContent = "To: " + match[1];
-            toEl.style.display = "block";
-          }
-        } catch (e) {
-          console.warn("Could not load guest data:", e);
+        if (match && match[1]) {
+          document.getElementById("greetingTo").textContent = "To: " + match[1];
         }
+      } catch (e) {
+        console.warn("Could not load guest data:", e);
+        // silently falls back to default
+      }
     }
 
     loadGuestName();
