@@ -96,6 +96,16 @@
       padding: 9cqi 10cqi;
     }
 
+    .hero-to {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 600;
+      font-size: 5.2cqi;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 0.55em;
+    }
+
     .hero-save-the-date {
       font-family: 'Cormorant Garamond', serif;
       font-weight: 600;
@@ -299,6 +309,7 @@
           <!-- SVG embossed frame injected by JS -->
 
           <div class="hero-inner">
+            <div class="hero-to"></div>
             <div class="hero-save-the-date">Save the Date</div>
             <div class="hero-subtitle">to celebrate the wedding of</div>
 
@@ -559,6 +570,45 @@
       el.textContent = msg;
       el.className = "status-msg" + (isError ? " error" : "");
     }
+  </script>
+
+  <script>
+    // ── CONFIG — fill these in ──────────────────────────────
+    var SHEET_ID  = "1MKSzGyvsqkqM5AbEqpS9H9WwJz-3posmsl-EhCA9s5g";
+    var API_KEY   = "AIzaSyDkkITiuRuMkuHpIWzHU9NhHoMqrkaJRCI";
+    var SHEET_TAB = "Sheet1"; // tab name at the bottom of your sheet
+    // ────────────────────────────────────────────────────────
+
+    // ── Read ?id= from URL ──
+    var guestId = new URLSearchParams(window.location.search).get("id");
+
+    // ── Fetch guest name from Sheets API ──
+    async function loadGuestName() {
+      if (!guestId) return; // no id = show default names as-is
+
+      var url = "https://sheets.googleapis.com/v4/spreadsheets/"
+        + SHEET_ID
+        + "/values/"
+        + encodeURIComponent(SHEET_TAB + "!A:B")
+        + "?key=" + API_KEY;
+
+        try {
+          var res  = await fetch(url);
+          var data = await res.json();
+          var rows = data.values || [];
+          var match = rows.find(function(row) { return row[0] === guestId; });
+
+          if (match && match[1]) {
+            var toEl = document.getElementById("hero-to");
+            toEl.textContent = "To: " + match[1];
+            toEl.style.display = "block";
+          }
+        } catch (e) {
+          console.warn("Could not load guest data:", e);
+        }
+    }
+
+    loadGuestName();
   </script>
 </body>
 </html>
