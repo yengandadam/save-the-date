@@ -14,9 +14,6 @@
       --green-mid: #2a5c3a;
       --green-light: #4a7a58;
       --card-bg: #c8c4b0;
-      /* Reference card width for the greeting page font sizing.
-         We use a CSS custom property set by JS once the card is measured,
-         but we also define a vw-based fallback so it renders immediately. */
       --card-w: min(100vw - 3rem, calc(90vh * 15 / 21));
     }
 
@@ -60,9 +57,6 @@
 
     /* ─────────────────────────────────────
        PAGE 1 — GREETING
-       Full-viewport section, no card.
-       Font sizes derived from --card-w so
-       they stay proportional to the card.
     ───────────────────────────────────────*/
     .greeting-section {
       min-height: 100vh;
@@ -76,13 +70,11 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 0;
       width: 100%;
       max-width: 720px;
     }
 
-    /* Ghost container — same width as the card but zero height,
-       just so container queries give us the same cqi scale. */
+    /* Same width as the card so cqi resolves identically */
     .greeting-sizer {
       width: min(100%, calc(90vh * 15 / 21));
       container-type: inline-size;
@@ -95,7 +87,7 @@
       font-family: 'Cormorant Garamond', serif;
       font-style: italic;
       font-weight: 400;
-      font-size: 3.7cqi;       /* matches .hero-venue exactly */
+      font-size: 5.8cqi;
       letter-spacing: 0.04em;
       color: #f0ede6;
       text-shadow: 0 2px 12px rgba(0,0,0,0.45);
@@ -165,7 +157,7 @@
       transform: translateY(40px);
     }
 
-    /* ── Hero card inner content ── */
+    /* Padding lives here, NOT on .letter-card, so cqi = full card width */
     .hero-inner {
       position: relative;
       z-index: 2;
@@ -272,7 +264,7 @@
     .rsvp-section .letter-card {
       width: min(100%, calc(90vh * 15 / 21));
       aspect-ratio: 15 / 21;
-      padding: 7cqi 8cqi 6cqi;
+      padding: 0;               /* NO padding here — lives in .rsvp-inner */
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -288,6 +280,19 @@
     .rsvp-section .letter-card.hidden {
       opacity: 0;
       transform: translateY(40px);
+    }
+
+    /* Mirrors .hero-inner exactly so cqi = full card width */
+    .rsvp-inner {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      padding: 9cqi 10cqi;
     }
 
     .rsvp-title {
@@ -420,32 +425,37 @@
     <section class="rsvp-section">
       <div class="letter-card" id="rsvpCard">
 
-        <div id="formState">
-          <div class="rsvp-title">Share your address</div>
-          <div class="rsvp-subtitle">so we can send your formal invitation</div>
+        <!-- rsvp-inner: padding wrapper so cqi = full card width -->
+        <div class="rsvp-inner">
 
-          <div class="form-inner">
-            <div class="field-group">
-              <label for="partyName">Party name</label>
-              <input type="text" id="partyName" placeholder="e.g. The Johnson Family" />
-            </div>
-            <div class="field-group">
-              <label for="mailingAddress">Mailing address</label>
-              <textarea id="mailingAddress" rows="3" placeholder="Street, City, State, ZIP"></textarea>
-            </div>
+          <div id="formState">
+            <div class="rsvp-title">Share your address</div>
+            <div class="rsvp-subtitle">so we can send your formal invitation</div>
 
-            <button class="submit-btn" id="submitBtn" onclick="handleSubmit()">Submit ✦</button>
-            <div class="status-msg" id="statusMsg"></div>
+            <div class="form-inner">
+              <div class="field-group">
+                <label for="partyName">Party name</label>
+                <input type="text" id="partyName" placeholder="e.g. The Johnson Family" />
+              </div>
+              <div class="field-group">
+                <label for="mailingAddress">Mailing address</label>
+                <textarea id="mailingAddress" rows="3" placeholder="Street, City, State, ZIP"></textarea>
+              </div>
+
+              <button class="submit-btn" id="submitBtn" onclick="handleSubmit()">Submit ✦</button>
+              <div class="status-msg" id="statusMsg"></div>
+            </div>
           </div>
-        </div>
 
-        <div class="success-state" id="successState">
-          <div class="success-icon">✦</div>
-          <div class="success-title">Thank you!</div>
-          <div class="success-sub">We'll be in touch with your formal invitation.</div>
-          <div class="divider" style="margin:0.5rem auto;max-width:180px;"><div class="divider-line"></div><div class="divider-diamond"></div><div class="divider-line"></div></div>
-          <div style="font-size:11px;color:#6a8050;letter-spacing:1px;">Yeng &amp; Adam</div>
-        </div>
+          <div class="success-state" id="successState">
+            <div class="success-icon">✦</div>
+            <div class="success-title">Thank you!</div>
+            <div class="success-sub">We'll be in touch with your formal invitation.</div>
+            <div class="divider" style="margin:0.5rem auto;max-width:180px;"><div class="divider-line"></div><div class="divider-diamond"></div><div class="divider-line"></div></div>
+            <div style="font-size:11px;color:#6a8050;letter-spacing:1px;">Yeng &amp; Adam</div>
+          </div>
+
+        </div><!-- /.rsvp-inner -->
 
       </div>
     </section>
@@ -583,45 +593,36 @@
     // ── Intersection observers ─────────────────────────────────────────────────
 
     // Page 1 greeting — fade in on load
-    var greetingEl = document.getElementById('greetingTo');
-    // Small delay so the fade feels intentional
-    setTimeout(function() { greetingEl.classList.add('visible'); }, 200);
+    setTimeout(function() {
+      document.getElementById('greetingTo').classList.add('visible');
+    }, 200);
 
-    // Page 2 hero card — slide in/out on scroll
-    var heroCard = document.getElementById("heroCard");
-    var heroBeenVisible = false;
+    // Track scroll direction
+    var lastScrollY = window.scrollY;
+    var scrollingUp = false;
+    window.addEventListener('scroll', function() {
+      scrollingUp = window.scrollY < lastScrollY;
+      lastScrollY = window.scrollY;
+    }, { passive: true });
 
-    var heroObserver = new IntersectionObserver(function(entries) {
-      entries.forEach(function(e) {
-        if (e.isIntersecting) {
-          heroBeenVisible = true;
-          heroCard.classList.remove("hidden");
-          heroCard.classList.add("visible");
-        } else if (heroBeenVisible) {
-          heroCard.classList.remove("visible");
-          heroCard.classList.add("hidden");
-        }
-      });
-    }, { threshold: 0.65 });
-    heroObserver.observe(heroCard);
+    function makeCardObserver(cardEl) {
+      var beenVisible = false;
+      return new IntersectionObserver(function(entries) {
+        entries.forEach(function(e) {
+          if (e.isIntersecting) {
+            beenVisible = true;
+            cardEl.classList.remove("hidden");
+            cardEl.classList.add("visible");
+          } else if (beenVisible && scrollingUp) {
+            cardEl.classList.remove("visible");
+            cardEl.classList.add("hidden");
+          }
+        });
+      }, { threshold: 0.65 });
+    }
 
-    // Page 3 RSVP card — slide in/out on scroll
-    var rsvpCard = document.getElementById("rsvpCard");
-    var hasBeenVisible = false;
-
-    var rsvpObserver = new IntersectionObserver(function(entries) {
-      entries.forEach(function(e) {
-        if (e.isIntersecting) {
-          hasBeenVisible = true;
-          rsvpCard.classList.remove("hidden");
-          rsvpCard.classList.add("visible");
-        } else if (hasBeenVisible) {
-          rsvpCard.classList.remove("visible");
-          rsvpCard.classList.add("hidden");
-        }
-      });
-    }, { threshold: 0.65 });
-    rsvpObserver.observe(rsvpCard);
+    makeCardObserver(document.getElementById("heroCard")).observe(document.getElementById("heroCard"));
+    makeCardObserver(document.getElementById("rsvpCard")).observe(document.getElementById("rsvpCard"));
 
     // ── RSVP form submit ──────────────────────────────────────────────────────
     var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwu_X-k0d39XcjXQGEW5IyghrncDPGTQk8nJByQdVVTx3MTi_WKg21HACGErGXzqKD3/exec";
@@ -665,7 +666,7 @@
     var guestId = new URLSearchParams(window.location.search).get("id");
 
     async function loadGuestName() {
-      if (!guestId) return; // no id → keep default "To: Yeng and Adam"
+      if (!guestId) return;
 
       var url = "https://sheets.googleapis.com/v4/spreadsheets/"
         + SHEET_ID + "/values/"
@@ -677,13 +678,11 @@
         var data = await res.json();
         var rows = data.values || [];
         var match = rows.find(function(row) { return row[0] === guestId; });
-
         if (match && match[1]) {
           document.getElementById("greetingTo").textContent = "To: " + match[1];
         }
       } catch (e) {
         console.warn("Could not load guest data:", e);
-        // silently falls back to default
       }
     }
 
