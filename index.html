@@ -23,6 +23,13 @@
       background: url('assets/background.jpg') center center / cover fixed;
     }
 
+    /* Mobile: background-attachment: fixed causes zoom/blur on iOS & Android */
+    @media (max-width: 768px) {
+      body {
+        background-attachment: scroll;
+      }
+    }
+
     body::before {
       content: '';
       position: fixed;
@@ -53,6 +60,7 @@
       width: 100%;
       height: 100%;
       pointer-events: none;
+      display: none;
     }
 
     /* ─────────────────────────────────────
@@ -173,7 +181,7 @@
     .hero-save-the-date {
       font-family: 'Cormorant Garamond', serif;
       font-weight: 600;
-      font-size: 5.2cqi;
+      font-size: 5.0cqi;
       letter-spacing: 0.28em;
       text-transform: uppercase;
       color: var(--green);
@@ -193,7 +201,7 @@
     .hero-name {
       font-family: 'Cormorant Garamond', serif;
       font-weight: 700;
-      font-size: 5.2cqi;
+      font-size: 5.0cqi;
       letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--green);
@@ -298,7 +306,7 @@
     .rsvp-title {
       font-family: 'Cormorant Garamond', serif;
       font-weight: 600;
-      font-size: 5.2cqi;
+      font-size: 4.0cqi;
       letter-spacing: 0.28em;
       text-transform: uppercase;
       color: var(--green);
@@ -618,7 +626,7 @@
             cardEl.classList.add("hidden");
           }
         });
-      }, { threshold: 0.65 });
+      }, { threshold: 0.3 });
     }
 
     makeCardObserver(document.getElementById("heroCard")).observe(document.getElementById("heroCard"));
