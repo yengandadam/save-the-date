@@ -20,16 +20,22 @@
     body {
       min-height: 100vh;
       font-family: 'Lato', sans-serif;
-      background: url('assets/background.jpg') center center / cover fixed;
+      background: none;
     }
 
-    /* Mobile: swap to a portrait-cropped image and drop fixed attachment (causes iOS blur) */
+    /* Fixed background layer — rendered at full size, never rescaled by the browser */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: url('assets/background.jpg') center center / cover no-repeat;
+      z-index: -1;
+    }
+
+    /* Mobile: use portrait-cropped image */
     @media (max-width: 768px) {
-      body {
+      body::after {
         background-image: url('assets/background_mobile.jpg');
-        background-attachment: scroll;
-        background-size: cover;
-        background-position: center center;
       }
     }
 
