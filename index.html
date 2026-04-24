@@ -23,10 +23,13 @@
       background: url('assets/background.jpg') center center / cover fixed;
     }
 
-    /* Mobile: background-attachment: fixed causes zoom/blur on iOS & Android */
+    /* Mobile: swap to a portrait-cropped image and drop fixed attachment (causes iOS blur) */
     @media (max-width: 768px) {
       body {
+        background-image: url('assets/background_mobile.jpg');
         background-attachment: scroll;
+        background-size: cover;
+        background-position: center center;
       }
     }
 
@@ -437,7 +440,7 @@
         <div class="rsvp-inner">
 
           <div id="formState">
-            <div class="rsvp-title">Formal invitation to follow</div>
+            <div class="rsvp-title">Formal Invitation<br>To Follow</div>
             <div class="rsvp-subtitle">Please share with us your mailing address!</div>
 
             <div class="form-inner">
