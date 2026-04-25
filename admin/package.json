@@ -1,0 +1,19 @@
+{
+  "name": "save-the-date-admin",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Local admin tool for sending save-the-date emails via Resend.",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "resend": "^4.0.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

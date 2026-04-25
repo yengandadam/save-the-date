@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dispatch — Save the Date</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Lato:wght@300;400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --paper:   #f4ecdc;
+    --paper-2: #ece2cc;
+    --ink:     #1a2418;
+    --ink-2:   #3a4a35;
+    --green:   #1a4a2e;
+    --green-2: #2a5c3a;
+    --rule:    #b9ad90;
+    --muted:   #7a8a6e;
+    --warn:    #b14a2a;
+    --ok:      #2a5c3a;
+  }
+
+  html, body { height: 100%; }
+  body {
+    font-family: 'Lato', system-ui, sans-serif;
+    color: var(--ink);
+    background: var(--paper);
+    background-image:
+      radial-gradient(1200px 800px at 20% -10%, rgba(255,250,235,0.55), transparent 60%),
+      radial-gradient(900px 700px at 110% 110%, rgba(120,140,100,0.10), transparent 60%),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220' viewBox='0 0 220 220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.1 0 0 0 0 0.08 0 0 0 0 0.05 0 0 0 0.06 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    background-blend-mode: normal, normal, multiply;
+    min-height: 100vh;
+  }
+
+  .page {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 56px 28px 96px;
+  }
+
+  /* ── header ─────────────────────────────── */
+  .masthead {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 24px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.42em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 400;
+  }
+  .title {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 500;
+    font-size: clamp(44px, 7vw, 72px);
+    line-height: 0.95;
+    color: var(--green);
+    letter-spacing: 0.005em;
+    margin-top: 6px;
+  }
+  .colophon {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    text-align: right;
+    line-height: 1.6;
+  }
+  .colophon b { color: var(--ink-2); font-weight: 500; }
+  .status-dot {
+    display: inline-block;
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--warn);
+    box-shadow: 0 0 0 3px rgba(177,74,42,0.18);
+    transform: translateY(-1px);
+    margin-right: 6px;
+  }
+  .status-dot.ready { background: var(--ok); box-shadow: 0 0 0 3px rgba(42,92,58,0.18); }
+
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+    padding: 14px 0 28px;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+    border-bottom: 1px solid var(--rule);
+  }
+  .meta-row span b { font-family: 'JetBrains Mono', monospace; letter-spacing: 0.04em; text-transform: none; color: var(--green); font-weight: 500; }
+
+  /* ── columns ────────────────────────────── */
+  .columns {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 36px;
+    padding-top: 32px;
+  }
+  @media (max-width: 760px) { .columns { grid-template-columns: 1fr; gap: 28px; } }
+
+  .col-label {
+    font-size: 10px;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .col-label::after {
+    content: '';
+    flex: 1;
+    height: 1px; background: var(--rule);
+  }
+
+  /* ── input panel ────────────────────────── */
+  .ledger {
+    position: relative;
+    background: linear-gradient(180deg, #fbf5e6 0%, #f4ecdc 100%);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    box-shadow:
+      inset 0 0 0 1px rgba(255,255,255,0.4),
+      0 30px 60px -40px rgba(40,55,35,0.35);
+  }
+  .ledger-head {
+    display: grid;
+    grid-template-columns: 64px 1fr 1.4fr 1fr;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 10px 14px;
+    border-bottom: 1px dashed var(--rule);
+  }
+  textarea.entries {
+    display: block;
+    width: 100%;
+    min-height: 320px;
+    padding: 16px;
+    background: transparent;
+    color: var(--ink);
+    border: 0;
+    outline: 0;
+    resize: vertical;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.85;
+    letter-spacing: 0.01em;
+    background-image:
+      repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent calc(1.85em - 1px),
+        rgba(122,138,110,0.18) calc(1.85em - 1px),
+        rgba(122,138,110,0.18) 1.85em
+      );
+    background-position: 0 8px;
+  }
+  textarea.entries::placeholder { color: rgba(58,74,53,0.45); }
+
+  .helper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    border-top: 1px dashed var(--rule);
+    background: rgba(255,250,235,0.4);
+  }
+  .helper b { color: var(--green); font-weight: 500; }
+  .helper .invalid { color: var(--warn); }
+
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 18px;
+    align-items: center;
+  }
+
+  .btn {
+    font-family: 'Lato', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    padding: 13px 22px;
+    border: 1px solid var(--green);
+    background: var(--green);
+    color: var(--paper);
+    cursor: pointer;
+    border-radius: 1px;
+    transition: background 160ms ease, color 160ms ease, transform 160ms ease;
+  }
+  .btn:hover { background: var(--green-2); }
+  .btn:active { transform: translateY(1px); }
+  .btn[disabled] { opacity: 0.45; cursor: not-allowed; }
+
+  .btn.ghost { background: transparent; color: var(--green); }
+  .btn.ghost:hover { background: rgba(26,74,46,0.06); }
+
+  label.checkbox {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--ink-2);
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    user-select: none;
+  }
+  label.checkbox input { accent-color: var(--green); }
+
+  /* ── manifest panel ─────────────────────── */
+  .manifest {
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    background: rgba(255,250,235,0.55);
+    min-height: 380px;
+    display: flex; flex-direction: column;
+  }
+  .manifest-head {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: baseline;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .manifest-head .h {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic; font-weight: 500;
+    font-size: 22px; color: var(--green);
+  }
+  .manifest-head .tally {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .manifest-body { flex: 1; overflow-y: auto; max-height: 460px; }
+  .empty {
+    padding: 64px 24px;
+    text-align: center;
+    color: var(--muted);
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 18px;
+    line-height: 1.6;
+  }
+  .empty::before {
+    content: '✶';
+    display: block;
+    font-size: 22px;
+    margin-bottom: 10px;
+    opacity: 0.5;
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 16px 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    border-bottom: 1px dashed rgba(185,173,144,0.6);
+    font-size: 13px;
+  }
+  .row:last-child { border-bottom: 0; }
+  .row .pip {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--rule);
+    transform: translateY(0);
+  }
+  .row.queued .pip { background: var(--rule); }
+  .row.sending .pip {
+    background: var(--green);
+    animation: pulse 900ms ease-in-out infinite;
+  }
+  .row.sent .pip { background: var(--ok); box-shadow: 0 0 0 3px rgba(42,92,58,0.18); }
+  .row.failed .pip { background: var(--warn); box-shadow: 0 0 0 3px rgba(177,74,42,0.18); }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.4; transform: scale(0.85); }
+    50%      { opacity: 1;   transform: scale(1.1); }
+  }
+
+  .row .who {
+    display: flex; flex-direction: column; gap: 2px;
+    min-width: 0;
+  }
+  .row .id {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+  .row .email {
+    color: var(--ink);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .row .stat {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: right;
+  }
+  .row.sent   .stat { color: var(--ok); }
+  .row.failed .stat { color: var(--warn); }
+  .row.failed .err {
+    display: block;
+    margin-top: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--warn);
+    text-transform: none;
+    letter-spacing: 0.02em;
+    white-space: normal;
+  }
+
+  /* ── footer ─────────────────────────────── */
+  .preview-link {
+    margin-top: 14px;
+    font-family: 'Lato', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .preview-link a { color: var(--green); text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+
+  .colophon-foot {
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    display: flex; justify-content: space-between; gap: 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+  <main class="page">
+
+    <header class="masthead">
+      <div>
+        <div class="eyebrow">No. 001 — Private dispatch</div>
+        <h1 class="title">Save&nbsp;the&nbsp;Date<span style="font-style:normal;color:var(--ink-2);">,</span><br/>Dispatch&nbsp;Office</h1>
+      </div>
+      <div class="colophon">
+        <div><span class="status-dot" id="statusDot"></span><b id="statusText">checking…</b></div>
+        <div>FROM&nbsp; <b id="fromAddr">—</b></div>
+      </div>
+    </header>
+
+    <div class="meta-row">
+      <span>Couple&nbsp; <b>Yeng &amp; Adam</b></span>
+      <span>Date&nbsp;  <b>May&nbsp;1,&nbsp;2027</b></span>
+      <span>Place&nbsp; <b>Chicago</b></span>
+      <span>Site&nbsp;  <b>yengandadam.github.io/save-the-date</b></span>
+    </div>
+
+    <section class="columns">
+      <div>
+        <div class="col-label">Mailing list</div>
+
+        <div class="ledger">
+          <div class="ledger-head">
+            <span>#</span><span>ID</span><span>Email</span><span>Name (opt.)</span>
+          </div>
+          <textarea
+            id="entries"
+            class="entries"
+            spellcheck="false"
+            autocomplete="off"
+            placeholder="abc123, friend@example.com, Sam Rivera&#10;def456, another@example.com&#10;&#10;one entry per line — id, email, [name]"
+          ></textarea>
+          <div class="helper">
+            <span>Format&nbsp;&middot;&nbsp; <code>id, email, name</code></span>
+            <span>
+              <b id="countValid">0</b>&nbsp;valid&nbsp;
+              <span id="countInvalid" class="invalid"></span>
+            </span>
+          </div>
+        </div>
+
+        <div class="controls">
+          <button id="sendBtn" class="btn" type="button">Send dispatch</button>
+          <button id="dryBtn" class="btn ghost" type="button">Dry run</button>
+          <label class="checkbox">
+            <input type="checkbox" id="confirmReal" />
+            I really want to send these.
+          </label>
+        </div>
+
+        <div class="preview-link">
+          Email preview&nbsp;→&nbsp;
+          <a href="/api/preview?id=preview&name=Friend" target="_blank" rel="noopener">open template</a>
+        </div>
+      </div>
+
+      <div>
+        <div class="col-label">Manifest</div>
+        <div class="manifest">
+          <div class="manifest-head">
+            <div class="h">Outgoing</div>
+            <div class="tally" id="tally">awaiting batch</div>
+          </div>
+          <div class="manifest-body" id="manifest">
+            <div class="empty">No batch yet.<br/>Enter recipients and dispatch.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="colophon-foot">
+      <span>local dispatch · resend · yeng &amp; adam</span>
+      <span id="footerNote">v1</span>
+    </footer>
+  </main>
+
+<script>
+  const $ = (id) => document.getElementById(id);
+  const entries = $('entries');
+  const countValid = $('countValid');
+  const countInvalid = $('countInvalid');
+  const sendBtn = $('sendBtn');
+  const dryBtn  = $('dryBtn');
+  const confirmReal = $('confirmReal');
+  const manifest = $('manifest');
+  const tally    = $('tally');
+  const statusDot  = $('statusDot');
+  const statusText = $('statusText');
+  const fromAddr   = $('fromAddr');
+
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  function parseEntries(text) {
+    const out = [];
+    const errs = [];
+    text.split(/\r?\n/).forEach((line, i) => {
+      const raw = line.trim();
+      if (!raw) return;
+      const parts = raw.split(',').map((s) => s.trim());
+      const [id, email, ...nameParts] = parts;
+      const name = nameParts.join(', ').trim() || undefined;
+      if (!id || !email) {
+        errs.push({ line: i + 1, reason: 'missing id or email' });
+        return;
+      }
+      if (!EMAIL_RE.test(email)) {
+        errs.push({ line: i + 1, reason: 'bad email: ' + email });
+        return;
+      }
+      out.push({ id, email, name });
+    });
+    return { recipients: out, errors: errs };
+  }
+
+  function refreshCounts() {
+    const { recipients, errors } = parseEntries(entries.value);
+    countValid.textContent = String(recipients.length);
+    countInvalid.textContent = errors.length ? `· ${errors.length} invalid` : '';
+    sendBtn.disabled = recipients.length === 0;
+    dryBtn.disabled  = recipients.length === 0;
+    return { recipients, errors };
+  }
+
+  entries.addEventListener('input', refreshCounts);
+  refreshCounts();
+
+  // status indicator
+  fetch('/api/status').then(r => r.json()).then((s) => {
+    if (s.ready) {
+      statusDot.classList.add('ready');
+      statusText.textContent = 'Resend connected';
+    } else {
+      statusText.textContent = 'Resend key missing';
+    }
+    if (s.fromEmail) fromAddr.textContent = s.fromEmail;
+  }).catch(() => {
+    statusText.textContent = 'server unreachable';
+  });
+
+  function renderManifest(rows) {
+    if (!rows.length) {
+      manifest.innerHTML = '<div class="empty">No batch yet.<br/>Enter recipients and dispatch.</div>';
+      return;
+    }
+    manifest.innerHTML = rows.map((r, i) => `
+      <div class="row ${r.status}" data-i="${i}">
+        <span class="pip"></span>
+        <span class="who">
+          <span class="id">${escapeHtml(r.id)}</span>
+          <span class="email">${escapeHtml(r.email)}${r.name ? ' · ' + escapeHtml(r.name) : ''}</span>
+          ${r.error ? `<span class="err">${escapeHtml(r.error)}</span>` : ''}
+        </span>
+        <span class="stat">${r.statusLabel}</span>
+      </div>
+    `).join('');
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  function setTally(total, sent, failed) {
+    tally.textContent = `${sent}/${total} sent${failed ? ` · ${failed} failed` : ''}`;
+  }
+
+  async function dispatch({ dryRun }) {
+    const { recipients, errors } = refreshCounts();
+    if (!recipients.length) return;
+
+    if (!dryRun && !confirmReal.checked) {
+      confirmReal.focus();
+      confirmReal.parentElement.animate(
+        [{ color: 'var(--warn)' }, { color: 'var(--ink-2)' }],
+        { duration: 900 }
+      );
+      return;
+    }
+
+    const rows = recipients.map((r) => ({
+      ...r,
+      status: 'queued',
+      statusLabel: dryRun ? 'queued · dry' : 'queued',
+    }));
+    renderManifest(rows);
+    setTally(rows.length, 0, 0);
+
+    sendBtn.disabled = true; dryBtn.disabled = true;
+    const originalLabel = sendBtn.textContent;
+    sendBtn.textContent = dryRun ? 'Dry running…' : 'Sending…';
+
+    // mark all "sending" while server is processing them sequentially
+    rows.forEach((r) => { r.status = 'sending'; r.statusLabel = dryRun ? 'sending · dry' : 'sending'; });
+    renderManifest(rows);
+
+    try {
+      const res = await fetch('/api/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ recipients, dryRun }),
+      });
+      const data = await res.json();
+
+      if (!data.ok) {
+        rows.forEach((r) => { r.status = 'failed'; r.statusLabel = 'failed'; r.error = data.error || 'request failed'; });
+        renderManifest(rows);
+        setTally(rows.length, 0, rows.length);
+        return;
+      }
+
+      // merge results back in by id+email
+      const map = new Map(data.results.map((r) => [r.id + '|' + r.email, r]));
+      let sent = 0, failed = 0;
+      rows.forEach((r) => {
+        const m = map.get(r.id + '|' + r.email);
+        if (!m) { r.status = 'failed'; r.statusLabel = 'no result'; failed++; return; }
+        if (m.ok) {
+          r.status = 'sent';
+          r.statusLabel = m.dryRun ? 'ok · dry' : 'sent';
+          sent++;
+        } else {
+          r.status = 'failed';
+          r.statusLabel = 'failed';
+          r.error = m.error;
+          failed++;
+        }
+      });
+      renderManifest(rows);
+      setTally(rows.length, sent, failed);
+    } catch (err) {
+      rows.forEach((r) => { r.status = 'failed'; r.statusLabel = 'failed'; r.error = err.message; });
+      renderManifest(rows);
+      setTally(rows.length, 0, rows.length);
+    } finally {
+      sendBtn.textContent = originalLabel;
+      refreshCounts();
+    }
+  }
+
+  sendBtn.addEventListener('click', () => dispatch({ dryRun: false }));
+  dryBtn.addEventListener('click',  () => dispatch({ dryRun: true  }));
+</script>
+</body>
+</html>
