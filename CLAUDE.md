@@ -2,46 +2,34 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Branch model
+
+The repo has two intentionally-diverged branches that should **never be merged**:
+
+- **`main`** — what GitHub Pages serves at `yengandadam.com`. Public site only, plus deployed assets the email tool needs.
+- **`feat/email-sender`** (this branch) — local-only admin tool for sending save-the-date emails (`admin/`). Never pushed-and-merged into `main`.
+
+You're currently on `feat/email-sender`. Edit `admin/` here. Do not edit website code on this branch — make website changes on `main`.
+
 ## Skill requirement
 
 Always invoke the `frontend-design` skill before making any UI or frontend changes in this project.
 
-## Running the site
+## Admin tool (`admin/`)
 
-No build system. Open `index.html` directly in a browser, or serve it with any static file server:
+Local Express server using [Resend](https://resend.com) to send the save-the-date emails. Full setup in [admin/README.md](admin/README.md).
 
-```
-npx serve .
-# or
-python -m http.server
-```
+- `admin/server.js` — Express server (`/api/status`, `/api/preview`, `/api/send`)
+- `admin/email-template.js` — HTML + plain-text email builder. `SITE_BASE` points at the deployed site (`https://yengandadam.com/savethedate`).
+- `admin/public/index.html` — admin UI
+- `admin/.env` — secrets (gitignored)
 
-## Architecture
+Run with `npm start` from `admin/`, then open `http://localhost:3000`.
 
-Single `index.html` — all CSS and JS are inline. Three full-viewport scroll sections:
+### The `couple.jpg` carve-out
 
-1. **Greeting** — personalised "To: [Name]" fade-in. Guest name is fetched from Google Sheets using a `?id=` URL query param and the Sheets REST API.
-2. **Hero card** — the save-the-date card (Yeng & Adam, May 1 2027, Chicago). An SVG embossed border frame is injected programmatically by the first `<script>` block (not in the HTML).
-3. **RSVP** — mailing address form that POSTs to a Google Apps Script URL via `fetch` with `mode: "no-cors"`.
+The email template loads the hero photo via `<img src="${SITE_BASE}/assets/couple.jpg">`, so the file has to be reachable at a public URL. It lives on `main` at `savethedate/assets/couple.jpg` — *deployed even though the website doesn't render it* — for the email's sake. If you replace the photo, push the new file to `main`, not here.
 
-### Design tokens
+## Stale website code at the repo root
 
-CSS custom properties in `:root`: `--green`, `--green-mid`, `--green-light`, `--card-bg`. Typography uses `cqi` (container query inline-size) units so text scales with the card width. Fonts: Cormorant Garamond (serif) + Lato (sans-serif) from Google Fonts.
-
-### Card sizing & layout
-
-Cards are sized with `width: min(100%, calc(90vh * 15 / 21))` and `aspect-ratio: 15/21` (portrait A4-ish). Padding lives in `.hero-inner` / `.rsvp-inner` (not on `.letter-card`) so that `cqi` resolves against the full card width.
-
-### Scroll animations
-
-Card visibility is managed by `IntersectionObserver` (`threshold: 0.3`). A separate scroll listener tracks direction; cards re-hide on upward scroll after they've been seen once.
-
-### External integrations
-
-- **Guest lookup**: Google Sheets API (`SHEET_ID`, `API_KEY` hardcoded in JS) — reads column A (ID) and B (name) from Sheet1.
-- **RSVP submission**: Google Apps Script (`SCRIPT_URL` hardcoded in JS) — receives `{ partyName, mailingAddress }` JSON.
-
-### Assets
-
-- `assets/background.jpg` — background image (all screen sizes)
-- `assets/letter.jpg` — parchment texture used as the card background
+`index.html` and `assets/` at the root of this branch are leftovers from before `main` was restructured into `savethedate/`. They're unused — the deployed site is `main`'s `savethedate/`. Treat them as read-only; ignore them when working on the admin tool.
