@@ -8,7 +8,7 @@ Always invoke the `frontend-design` skill before making any UI or frontend chang
 
 ## Running the site
 
-No build system. Open `index.html` directly in a browser, or serve it with any static file server:
+No build system. Serve the repo root with any static file server, then visit `/savethedate/`:
 
 ```
 npx serve .
@@ -16,9 +16,15 @@ npx serve .
 python -m http.server
 ```
 
+## Site layout
+
+- `/` (root `index.html`) — placeholder page served at `yengandadam.com/`.
+- `/savethedate/` — the actual save-the-date site (single `index.html` with inline CSS/JS, plus its own `assets/`).
+- `CNAME` — GitHub Pages custom domain (`yengandadam.com`); must stay at repo root.
+
 ## Architecture
 
-Single `index.html` — all CSS and JS are inline. Three full-viewport scroll sections:
+`savethedate/index.html` — all CSS and JS are inline. Three full-viewport scroll sections:
 
 1. **Greeting** — personalised "To: [Name]" fade-in. Guest name is fetched from Google Sheets using a `?id=` URL query param and the Sheets REST API.
 2. **Hero card** — the save-the-date card (Yeng & Adam, May 1 2027, Chicago). An SVG embossed border frame is injected programmatically by the first `<script>` block (not in the HTML).
@@ -43,5 +49,5 @@ Card visibility is managed by `IntersectionObserver` (`threshold: 0.3`). A separ
 
 ### Assets
 
-- `assets/background.jpg` — background image (all screen sizes)
-- `assets/letter.jpg` — parchment texture used as the card background
+- `savethedate/assets/background.jpg` — background image (all screen sizes)
+- `savethedate/assets/letter.jpg` — parchment texture used as the card background
