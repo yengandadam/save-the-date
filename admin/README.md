@@ -20,7 +20,7 @@ Local-only admin tool to send save-the-date emails through [Resend](https://rese
    - Use `onboarding@resend.dev` as `FROM_EMAIL` (works without domain verification, but only sends to your own verified address — fine for testing)
    - Or verify a domain in the Resend dashboard and use `Yeng & Adam <savethedate@yourdomain.com>`
 
-3. Make sure the hero photo lives at `../assets/couple.jpg` and is committed + pushed to GitHub Pages, since the email template loads it from `https://yengandadam.github.io/save-the-date/assets/couple.jpg`.
+3. Make sure the hero photo lives at `../savethedate/assets/couple.jpg` and is committed + pushed to GitHub Pages, since the email template loads it from `https://yengandadam.com/savethedate/assets/couple.jpg`.
 
 4. Start the server:
 

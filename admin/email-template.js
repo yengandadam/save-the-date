@@ -6,7 +6,7 @@
 //   - graceful fallbacks for Outlook (Georgia → Cormorant Garamond when available)
 //   - hero photo loaded from the public GitHub Pages assets path
 
-const SITE_BASE = 'https://yengandadam.github.io/save-the-date';
+const SITE_BASE = 'https://yengandadam.com/savethedate';
 const HERO_IMAGE = `${SITE_BASE}/assets/couple.jpg`;
 
 // May 1, 2027 — all-day event placeholder. Update times here when finalized.
@@ -179,7 +179,7 @@ export function buildEmail({ id, name } = {}) {
           </tr>
           <tr>
             <td class="footer" style="font-family:'Lato',Helvetica,Arial,sans-serif;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:#8a9382;text-align:center;padding:22px 16px 28px;">
-              With love &middot; <a href="${personalUrl}" style="color:#7a8a6e;">yengandadam.github.io</a>
+              With love &middot; <a href="${personalUrl}" style="color:#7a8a6e;">yengandadam.com</a>
             </td>
           </tr>
         </table>
