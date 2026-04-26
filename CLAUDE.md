@@ -29,7 +29,3 @@ Run with `npm start` from `admin/`, then open `http://localhost:3000`.
 ### The `couple.jpg` carve-out
 
 The email template loads the hero photo via `<img src="${SITE_BASE}/assets/couple.jpg">`, so the file has to be reachable at a public URL. It lives on `main` at `savethedate/assets/couple.jpg` — *deployed even though the website doesn't render it* — for the email's sake. If you replace the photo, push the new file to `main`, not here.
-
-## Stale website code at the repo root
-
-`index.html` and `assets/` at the root of this branch are leftovers from before `main` was restructured into `savethedate/`. They're unused — the deployed site is `main`'s `savethedate/`. Treat them as read-only; ignore them when working on the admin tool.
