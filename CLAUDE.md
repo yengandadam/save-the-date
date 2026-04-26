@@ -2,6 +2,15 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Branch model
+
+The repo has two intentionally-diverged branches that should **never be merged**:
+
+- **`main`** (this branch) — what GitHub Pages serves at `yengandadam.com`. Public site only, plus deployed assets the email tool needs.
+- **`feat/email-sender`** — local-only admin tool for sending save-the-date emails (`admin/`). Never merged into `main`.
+
+You're currently on `main`. Edit website code here. Don't add the `admin/` tool or any local-only scripts to this branch.
+
 ## Skill requirement
 
 Always invoke the `frontend-design` skill before making any UI or frontend changes in this project.
@@ -51,3 +60,4 @@ Card visibility is managed by `IntersectionObserver` (`threshold: 0.3`). A separ
 
 - `savethedate/assets/background.jpg` — background image (all screen sizes)
 - `savethedate/assets/letter.jpg` — parchment texture used as the card background
+- `savethedate/assets/couple.jpg` — *not used by the website*. Lives here only because the email template on `feat/email-sender` loads it from `https://yengandadam.com/savethedate/assets/couple.jpg`. If you replace the photo, do it on `main`.
